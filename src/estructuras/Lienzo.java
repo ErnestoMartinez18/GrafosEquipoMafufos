@@ -9,24 +9,29 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 /**
  * @author Cielo PM
  */
-public class Lienzo extends JPanel implements MouseListener {
+public class Lienzo extends JPanel implements MouseListener, MouseMotionListener  {
     private Vector<Nodo> vectorNodos;
     private Vector<Enlace> vectorEnlaces;
     private Point p1, p2;
+    private Nodo nodoMover;
+    private int iNodo;
     
     public Lienzo() {
         this.vectorNodos = new Vector<>();
         this.vectorEnlaces= new Vector<>();
         this.addMouseListener(this);
+        this.addMouseMotionListener(this);
     }
     
     public void paint(Graphics g) {
+         super.paint(g);
         for(Nodo nodos: vectorNodos) {
             nodos.pintar(g);
         }
@@ -62,12 +67,20 @@ public class Lienzo extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent me) {
-        
-    }
-
+         int iN=0;
+        for (Nodo nodo : vectorNodos) {   
+            if (new Rectangle(nodo.getX() - Nodo.d/2, nodo.getY() - Nodo.d/2, Nodo.d, Nodo.d).contains(me.getPoint())){
+               nodoMover = nodo;
+               iNodo= iN;
+               break;
+               }
+            iN++;
+         }
+      }
     @Override
     public void mouseReleased(MouseEvent me) {
-        
+        nodoMover=null;
+        iNodo=-1;  
     }
 
     @Override
@@ -77,6 +90,29 @@ public class Lienzo extends JPanel implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent me) {
+        
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent me) {
+    if(nodoMover != null){
+             this.vectorNodos.set(iNodo, new Nodo(me.getX(), me.getY(), nodoMover.getNombre()));
+             int  iE=0;
+             for (Enlace enlace : vectorEnlaces) {
+                  if (new Rectangle(enlace.getX1() - Nodo.d/2, enlace.getY1() - Nodo.d/2, Nodo.d, Nodo.d).contains(me.getPoint())){
+                      this.vectorEnlaces.set(iE, new Enlace(me.getX() , me.getY(), enlace.getX2(), enlace.getY2(), enlace.getNombre()));
+             } 
+                  else if (new Rectangle(enlace.getX2() - Nodo.d/2, enlace.getY2() - Nodo.d/2, Nodo.d, Nodo.d).contains(me.getPoint())){
+                      this.vectorEnlaces.set(iE, new Enlace(enlace.getX1(), enlace.getY1(), me.getX() , me.getY(), enlace.getNombre()));
+             } 
+              iE++;    
+         }      
+      }
+         repaint();
+    }    
+    
+    @Override
+    public void mouseMoved(MouseEvent e) {
         
     }
     
