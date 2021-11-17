@@ -10,6 +10,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 /**
  * @author Cielo PM
@@ -36,7 +37,8 @@ public class Lienzo extends JPanel implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent me) {
         if (me.getButton() == MouseEvent.BUTTON1) {
-            this.vectorNodos.add(new Nodo(me.getX(), me.getY()));
+            String nombre = JOptionPane.showInputDialog("Ingrese nombre nodo: ");
+            this.vectorNodos.add(new Nodo(me.getX(), me.getY(), nombre));
             repaint();
         }
         if(me.getButton()== MouseEvent.BUTTON3) {
@@ -47,7 +49,8 @@ public class Lienzo extends JPanel implements MouseListener {
                         p1= new Point(nodo.getX(), nodo.getY());
                     else { 
                         p2= new Point(nodo.getX(), nodo.getY());
-                        this.vectorEnlaces.add(new Enlace(p1.x, p1.y, p2.x, p2.y));
+                        String nombre = JOptionPane.showInputDialog("Ingrese nombre nodo: ");
+                        this.vectorEnlaces.add(new Enlace(p1.x, p1.y, p2.x, p2.y, nombre));
                         repaint();
                         p1=null;
                         p2=null;
